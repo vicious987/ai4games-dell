@@ -1,26 +1,31 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
+using namespace std;
 
 
 //TODO CONSTS LIKE MIN, BOARD STATUSES ( ADD DRAW AND ONGOING), PLAYER TOGLE?, CLASS METHODS?
 // CHOSING CHILDREN BY UTC, CODINGAME INPUT INTERACTION
 // ???
-class Tboard {
+struct Tboard {
 	int board [3][3] = {0};
 	bool finished = false;
 	int winner = 0;
 
 	int check_win_row(int row){
-		return board[row][0] + board[row][1] + board[row][2]
+		return board[row][0] + board[row][1] + board[row][2];
 	}
 
 	int check_win_col(int col){
-		return board[0][col] + board[1][row] + board[2][row]
+		return board[0][col] + board[1][col] + board[2][col];
 	}
 	int check_win_diag(int diag){
-		if(diag % == 0)
-			return board[2][0] + board[1][1] + board[0][2]
-		else:
-			return board[0][0] + board[1][1] + board[2][0]
+		if (diag % 2 == 0)
+			return board[2][0] + board[1][1] + board[0][2];
+		else
+			return board[0][0] + board[1][1] + board[2][0];
 	}
 
 	int check_win_cond(){
@@ -43,9 +48,9 @@ class Tboard {
 	}
 
 	public:
-	int [3][3] get_board(){
-		return board;
-	}
+	//int[3][3] get_board(){
+	//	return board;
+	//}
 
 	int check_winner(){
 		winner = check_win_cond();
@@ -62,6 +67,9 @@ class Tboard {
 	}
 };
 
+			//return Collections.max(
+			//		node.getChildArray(),
+			//		Comparator.comparing(c -> uct_value(parentVisit, c.get_state().get_score(), c.get_state().get_visit_count())));
 
 
 
@@ -71,14 +79,14 @@ class State {
 	int visit_count = 0;
 	double score = 0;
 	
-	state(Tboard b, int pid){
+	State(Tboard b, int pid){
 		board = b;
-		played_id = pid;
+		player_id = pid;
 	}
 	public:
 
 	int get_player_id(){
-		return played_id;
+		return player_id;
 	}
 	int get_visit_count(){
 		return visit_count;
@@ -88,11 +96,11 @@ class State {
 	}
 
 	Tboard get_board(){
-		return board
+		return board;
 	}
 
 	void set_player_id(int pid){
-		playe_id = pid;
+		player_id = pid;
 	}
 	void inc_visit_count(){
 		visit_count += 1;
@@ -105,18 +113,18 @@ class State {
 	}
 
 	void make_move(int row, int col, int player_id){
-		board.make_move(row, col, played_id);
+		board.make_move(row, col, player_id);
 	}
 	void add_score(double sc){
 		score += sc;
 	}
+};
 
-}
+struct None;
 
-
-class Node{
+struct Node{
 	State state;
-	Node parent;
+	Node & parent;
 	vector<Node> children;
 	
 	Node(State st, Node pr){
@@ -144,7 +152,7 @@ class Node{
 	void add_child(Node child){
 		children.push(child);
 	}
-}
+};
 
 class Tree{
 	Node root;
@@ -162,24 +170,28 @@ class Tree{
 
 }
 
+double uct_value(int total_visit, double node_score, int node_visit) {
+	if (node_visit == 0) 
+		return MAX_VALUE;
+	return ((double) node_score/ (double) node_visit) + 1.41 * math.sqrt(math.log(total_visit) / (double) node_visit);
+
+}
 class UCT {
 	public:
-		double uct_value(int totalVisit, double nodeWinScore, int nodeVisit) {
-			if (nodeVisit == 0) {
-				return Integer.MAX_VALUE;
-			}
-			return ((double) node_score/ (double) node_visit) + 1.41 * Math.sqrt(Math.log(total_visit) / (double) node_visit);
+
+
+		bool utc_comp(const Node& a, const Node& b, int parent_visit){
+			return (	utc_value(parent_visit, a.get_state().get_score(), a.get_state().get_visit_count()) <
+					utc_value(parent_visit, b.get_state().get_score(), b.get_state().get_visit_count()))	
 		}
- 
 
 		// java -> cpp
 		Node find_best(Node node) {
-			int parent_visit = node.get_state().get_visit_count();
-			// get child with best uct value
-			return Collections.max(
-					node.getChildArray(),
-					Comparator.comparing(c -> uct_value(parentVisit, c.get_state().get_score(), c.get_state().get_visit_count())));
-
+			const int parent_visit = node.get_state().get_visit_count();
+			auto x = max_element(children_list.begin(), children_list.end(), [parent_visit](const auto & child1, const auto & child2) {
+				return uct_value(parent_visit, child2.e1, child1.e2) < uct_value(parent_visit, child2.e1, child2.e2);
+			});
+			
 		}
 
 }
@@ -243,7 +255,7 @@ class MCTS {
 
         // define an end time which will act as a terminating condition
 	
-		enemy = played_id * (-1);
+		enemy = player_id * (-1);
 		Tree tree = new Tree();
 		Node root_node = tree.get_root();
 		root_node.get_state().set_roard(board);
@@ -270,7 +282,22 @@ class MCTS {
 }
 
 	
+
 int main()
 {
-	return 0;
+    while (1) {
+        int enemy_row, enemy_col;
+        cin >> enemy_row >> enemy_col; cin.ignore();
+        int action_count;
+        cin >> action_count; cin.ignore();
+        for (int i = 0; i < action_count; i++) {
+            int row, col;
+            cin >> row >> col; cin.ignore();
+        }
+
+        // Write an action using cout. DON'T FORGET THE "<< endl"
+        // To debug: cerr << "Debug messages..." << endl;
+
+        cout << "0 0" << endl;
+    }
 }
